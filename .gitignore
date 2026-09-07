@@ -1,0 +1,48 @@
+# Logs
+
+*.log
+
+# Temporary files
+
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Editor / IDE
+
+.vscode/
+.idea/
+
+# OS generated files
+
+.DS_Store
+Thumbs.db
+
+# Build / cache directories
+
+.cache/
+build/
+dist/
+
+# Local environment files
+
+.env
+.env.*
+
+# Python
+
+**pycache**/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Shell / tooling
+
+shellcheck-cache/
+
+# Local test output
+
+test-output/
