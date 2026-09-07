@@ -50,7 +50,7 @@ availableModes:
 1920x1080@60.00Hz
 1920x1080@144.00Hz
 ```
-![alt text](image-6.png)
+![alt text](images/image-6.png)
 
 This means the hardware and Hyprland are both aware of the 144Hz mode.
 
@@ -103,7 +103,7 @@ Using:
 mode = "preferred"
 ```
 
-![alt text](image-7.png)
+![alt text](images/image-7.png)
 
 
 does **not necessarily mean the highest refresh rate**.
