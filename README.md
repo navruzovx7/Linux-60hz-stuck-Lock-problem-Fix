@@ -178,11 +178,17 @@ If the correct refresh rate is displayed:
 
 ---
 
-# Fastest Way — Hyprmod Users
+# Fastest Way — Only works on hyperland
 
 If you are using **Hyprmod**, you can use its monitor configuration instead of manually editing `monitors.lua`.
 
-Go to:
+Dowload hyprmod
+```bash
+sudo pacman -S paru
+paru -S hyprmod
+```
+
+Open hyprmod app Go to:
 
 ```text
 Hyprmod
