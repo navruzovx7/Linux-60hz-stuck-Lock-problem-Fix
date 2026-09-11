@@ -1,14 +1,18 @@
-# CachyOS + Hyprland — Monitor Hz Quick Fix
+# CachyOS + Hyprland — Monitor Refresh Rate Quick Fix
 
-## 1. Check your monitor name, resolution and refresh rate
+A quick guide for fixing monitor refresh-rate issues on **CachyOS + Hyprland**, especially when your display is stuck at `60 Hz` even though a higher refresh rate such as `120 Hz`, `144 Hz`, or `165 Hz` is available.
 
-Run:
+---
+
+## 1. Check Your Monitor
+
+First, check your monitor name, resolution, and available refresh rates:
 
 ```bash
 hyprctl monitors all
 ```
 
-Look for:
+Look for something similar to:
 
 ```text
 Monitor eDP-1
@@ -16,19 +20,24 @@ Monitor eDP-1
 availableModes: 1920x1080@60.00Hz 1920x1080@144.00Hz
 ```
 
-![alt text](images/image-3.png)
+![hyprctl monitors all output](images/image-3.png)
 
 In this example:
 
-* Monitor: `eDP-1`
-* Resolution: `1920x1080`
-* Target refresh rate: `144 Hz`
+* **Monitor:** `eDP-1`
+* **Resolution:** `1920x1080`
+* **Current refresh rate:** `60 Hz`
+* **Available refresh rate:** `144 Hz`
 
-> ⚠️ **Your values may be different.** Use the monitor name, resolution and refresh rate shown on **your own system**.
+> ⚠️ **Your values may be different.**
+>
+> Always use the monitor name, resolution, and refresh rate shown on **your own system**.
 
 ---
 
-## 2. Open the monitor config
+## 2. Open the Monitor Configuration
+
+If your Hyprland setup uses the Lua-based configuration, open:
 
 ```bash
 nano ~/.config/hypr/config/monitors.lua
@@ -46,13 +55,16 @@ hl.monitor({
     scale = "auto",
 })
 ```
-![alt text](images/image-1.png)
 
-Delete that section and replace it with the correct one below.
+![monitors.lua configuration](images/image-1.png)
+
+This configuration may currently use `preferred`, which can result in Hyprland selecting a lower refresh rate.
 
 ---
 
-## 3. Pick the example that matches your monitor
+## 3. Set Your Desired Refresh Rate
+
+Replace the existing monitor configuration with the correct values for your display.
 
 ### Example 1 — 1920×1080 @ 144 Hz
 
@@ -90,89 +102,218 @@ hl.monitor({
 })
 ```
 
-![alt text](images/image-14.png)
+![monitor configuration example](images/image-14.png)
 
-> ⚠️ **These are only examples.** If your monitor is different, replace:
+> ⚠️ **These are examples only.**
 >
-> `eDP-1` → your monitor name
-> `1920x1080` → your resolution
-> `144.0` → your desired Hz
-> `1.5` → your preferred scale
->
-> The exact values can be found with:
->
-> ```bash
-> hyprctl monitors all
-> ```
+> Replace the values with the ones supported by your own monitor.
 
----
+| Setting     | Description      |
+| ----------- | ---------------- |
+| `eDP-1`     | Monitor name     |
+| `1920x1080` | Resolution       |
+| `144.0`     | Refresh rate     |
+| `1.5`       | Display scale    |
+| `0x0`       | Monitor position |
 
-## 4. Remove conflicting monitor settings
-
-Check for other monitor configurations:
-
-```bash
-grep -RniE 'monitor|preferred|60\.0' ~/.config/hypr/
-```
-
-If you find an old configuration such as:
-
-```ini
-monitor=eDP-1,1920x1080@60.0,0x0,1.5
-```
-
-remove it or change it to your desired refresh rate.
-
-Also check:
-
-```bash
-~/.config/hypr/monitors.conf
-```
-
-Make sure another configuration is not forcing your monitor back to `60 Hz`.
-
----
-
-## 5. Reload Hyprland
-
-```bash
-hyprctl reload
-```
-
-Then check:
+You can find your actual values with:
 
 ```bash
 hyprctl monitors all
 ```
 
-You should now see your desired refresh rate, for example:
+---
+
+## 4. Check for Conflicting Monitor Settings
+
+If Hyprland keeps switching back to `60 Hz`, another configuration may be overriding your settings.
+
+Search your Hyprland configuration:
+
+```bash
+grep -RniE 'monitor|preferred|60\.0' ~/.config/hypr/
+```
+
+Look for old configurations such as:
+
+```ini
+monitor=eDP-1,1920x1080@60.0,0x0,1.5
+```
+
+If you find one, remove it or change it to your desired refresh rate.
+
+Also check:
+
+```text
+~/.config/hypr/monitors.conf
+```
+
+Make sure another configuration is not forcing the monitor back to `60 Hz`.
+
+---
+
+## 5. Reload Hyprland
+
+Reload your Hyprland configuration:
+
+```bash
+hyprctl reload
+```
+
+Then check your monitor again:
+
+```bash
+hyprctl monitors all
+```
+
+You should now see your desired refresh rate:
 
 ```text
 1920x1080@144.00Hz
 ```
 
-Done. ✅
+If the correct refresh rate is displayed:
+
+**Done. ✅**
 
 ---
 
-# Fastest Version
+# Fastest Way — Hyprmod Users
+
+If you are using **Hyprmod**, you can use its monitor configuration instead of manually editing `monitors.lua`.
+
+Go to:
+
+```text
+Hyprmod
+└── Monitors
+    └── Select your monitor
+        └── Change Refresh Rate / Hz
+```
+
+Choose the refresh rate supported by your monitor.
+
+For example:
+
+```text
+eDP-1
+1920x1080
+144 Hz
+```
+
+or:
+
+```text
+DP-1
+2560x1440
+165 Hz
+```
+
+After applying the change, verify it:
+
+```bash
+hyprctl monitors all
+```
+
+If your desired refresh rate is shown, you're done. ✅
+
+> ⚠️ **Important:** The exact Hyprmod menu or configuration path may vary depending on your Hyprmod version.
+
+---
+
+# Quick Troubleshooting
+
+### My monitor is still at 60 Hz
+
+Run:
+
+```bash
+hyprctl monitors all
+```
+
+Check whether your desired refresh rate appears under:
+
+```text
+availableModes
+```
+
+For example:
+
+```text
+availableModes: 1920x1080@60.00Hz 1920x1080@144.00Hz
+```
+
+If `144 Hz` is available but Hyprland is still using `60 Hz`, check for conflicting monitor configurations.
+
+### Invalid mode error
+
+Make sure the resolution and refresh rate match one of the modes reported by:
+
+```bash
+hyprctl monitors all
+```
+
+For example:
+
+```text
+2560x1440@165.00Hz
+```
+
+Use:
+
+```lua
+mode = "2560x1440@165.0"
+```
+
+---
+
+# Quick Summary
 
 ```text
 1. hyprctl monitors all
-        ↓
-2. Find monitor name + resolution + desired Hz
-        ↓
-3. nano ~/.config/hypr/config/monitors.lua
-        ↓
-4. Replace hl.monitor({ ... }) with the correct configuration
-        ↓
-5. Remove conflicting 60 Hz / preferred monitor settings
-        ↓
+          ↓
+2. Find monitor + resolution + available Hz
+          ↓
+3. Edit monitors.lua
+          ↓
+4. Set the desired refresh rate
+          ↓
+5. Check for conflicting configurations
+          ↓
 6. hyprctl reload
-        ↓
+          ↓
 7. hyprctl monitors all
-        ↓
-8. Desired Hz shown → DONE ✅
+          ↓
+8. Desired Hz → DONE ✅
 ```
 
-> ⚠️ **Important:** Do not blindly copy the examples if your monitor has different specifications. `eDP-1`, `1920x1080`, `144 Hz`, and `1.5` are only examples based on one configuration. Always check `hyprctl monitors all` first.
+---
+
+## ⚠️ Important
+
+The following values are **examples**:
+
+```text
+eDP-1
+1920x1080
+144 Hz
+1.5 scale
+```
+
+Your system may use completely different values.
+
+Always check your own monitor first:
+
+```bash
+hyprctl monitors all
+```
+
+### Example configurations
+
+```text
+eDP-1     → 1920x1080 @ 144 Hz
+DP-1      → 2560x1440 @ 165 Hz
+HDMI-A-1  → 1920x1080 @ 120 Hz
+```
+
+Do not use a refresh rate that your monitor does not support.
